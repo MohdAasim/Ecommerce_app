@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - '5000:5000'
+    environment:
+      - DB_NAME=ecommerce_app
+      - DB_USER=root
+      - DB_PASSWORD=root
+      - DB_HOST=db
+      - DB_DIALECT=mysql
+      - PORT=5000
+    depends_on:
+      db:
+        condition: service_healthy
+    command: npm start  # Make sure the correct start command is used
+
+  db:
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: ecommerce_app
+    ports:
+      - '3306:3306'
+    volumes:
+      - db-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "--host=localhost", "--user=root", "--password=root"]
+      interval: 30s
+      retries: 10
+      start_period: 60s
+      timeout: 20s
+
+volumes:
+  db-data:
