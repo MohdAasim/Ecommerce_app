@@ -3,6 +3,9 @@ version: '3.8'
 services:
   app:
     build: .
+    volumes:
+      - .:/app
+      - /app/node_modules
     ports:
       - '5000:5000'
     environment:
@@ -15,7 +18,7 @@ services:
     depends_on:
       db:
         condition: service_healthy
-    command: npm start  # Make sure the correct start command is used
+    command: npm run dev # Make sure the correct start command is used
 
   db:
     image: mysql:8.0

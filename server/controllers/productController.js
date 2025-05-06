@@ -1,58 +1,39 @@
-const Product = require('../models/Product');
+const productService = require('../services/productService'); // Import the service
 
+// Controller to handle the request for all products
 exports.getAllProducts = async (req, res) => {
   try {
-    const products = await Product.findAll();
+    const products = await productService.getProducts(req.query); // Call the service function with query params
+
     res.json(products);
   } catch (err) {
+    console.error("Error fetching products:", err);
     res.status(500).json({ error: 'Failed to fetch products' });
   }
 };
 
 exports.createProduct = async (req, res) => {
     try {
-      const { name, description, price, image_url, category } = req.body;
-  
-      // Basic validation
-      if (!name || !price) {
-        return res.status(400).json({ message: 'Name and price are required.' });
-      }
-  
-      const newProduct = await Product.create({
-        name,
-        description,
-        price,
-        image_url,
-        category,
-      });
-  
+      const newProduct = await productService.createProduct(req.body);
       res.status(201).json({
         message: 'Product created successfully',
         product: newProduct,
       });
     } catch (error) {
-      console.error('Error creating product:', error);
-      res.status(500).json({ message: 'Internal server error' });
+      const status = error.statusCode || 500;
+      res.status(status).json({ message: error.message });
     }
   };
 
-  exports.getProductById = async (req, res) => {
+exports.getProductById = async (req, res) => {
     try {
       const productId = req.params.id;
-  console.log(productId,"here")
-      // Find product by id
-      const product = await Product.findByPk(productId);
+      const product = await productService.getProductById(productId);
   
-      // Check if the product exists
-      if (!product) {
-        return res.status(404).json({ message: 'Product not found' });
-      }
-  
-      // Return the product data
-      return res.status(200).json({ product });
+      res.status(200).json({ product });
     } catch (error) {
-      console.error('Error fetching product by ID:', error);
-      return res.status(500).json({ message: 'Server error' });
+      const status = error.statusCode || 500;
+      res.status(status).json({ message: error.message });
     }
   };
   

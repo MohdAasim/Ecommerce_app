@@ -10,7 +10,7 @@ app.use(express.json());
 
 // Routes
 const productRoutes = require('./routes/productRoutes');
-app.use('/api/products', productRoutes);
+app.use('/api/v1/products', productRoutes);
 
 // Start server
 sequelize.sync().then(() => {
