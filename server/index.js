@@ -10,7 +10,11 @@ app.use(express.json());
 
 // Routes
 const productRoutes = require('./routes/productRoutes');
+const userRoutes = require('./routes/authRoutes')
+const uploadRoutes = require('./routes/uploadRoutes')
 app.use('/api/v1/products', productRoutes);
+app.use('/api/v1/auth',userRoutes)
+app.use('/api/v1/upload',uploadRoutes)
 
 // Start server
 sequelize.sync().then(() => {
